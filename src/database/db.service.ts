@@ -6,9 +6,15 @@ export class DbService {
   private connection;
   constructor() {}
   async execSql(sql) {
-    console.log(sql);
-    this.connection = await db.getConnection();
-    const result = await this.connection.execute(sql);
+    let result;
+    try {
+      this.connection = await db.getConnection();
+      console.log(sql);
+      result = await this.connection.execute(sql);
+    } catch (error) {
+      console.error(error);
+    }
+
     const columns = result?.metaData;
     const values = result?.rows;
     return values?.map((row) => this.parseDbData(columns, row));
